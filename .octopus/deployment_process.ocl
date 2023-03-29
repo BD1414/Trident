@@ -70,7 +70,7 @@ step "generate-database-delta-report" {
                     Write-Highlight "One of the specific commands we look for has been found"
                 }
                 
-                Set-OctopusVariable -name "ApprovalRequired" -value $ApprovalRequired
+                Set-OctopusVariable -name "ApprovalRequired" -value $ApprovalRequired 
                 EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
