@@ -221,16 +221,15 @@ step "verify-application" {
 }
 
 step "add-to-load-balancer" {
-    name = "Update Load Balancer"
+    name = "Update Load Balancer to Blue or Green"
 
     action {
         action_type = "Octopus.Script"
         properties = {
             Octopus.Action.RunOnServer = "true"
             Octopus.Action.Script.ScriptBody = <<-EOT
-                $machineName = $OctopusParameters["Octopus.Machine.Name"]
-                
-                Write-Host "Updating load balancer to disable Maintenance Mode"
+                $currentEnvironment = $OctopusParameters["Octopus.Environment.Name"]
+                Write-Highlight "Updating load balancer to point to $currentEnvironment"
                 EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
