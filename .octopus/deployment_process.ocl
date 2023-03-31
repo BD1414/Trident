@@ -129,25 +129,6 @@ step "dba-review-changes" {
     }
 }
 
-step "enable-maintenance-mode" {
-    name = "Enable Maintenance Mode"
-
-    action "remove-from-load-balancer" {
-        action_type = "Octopus.Script"
-        properties = {
-            Octopus.Action.RunOnServer = "true"
-            Octopus.Action.Script.ScriptBody = <<-EOT
-                $machineName = $OctopusParameters["Octopus.Machine.Name"]
-                
-                Write-Host "Updating load balancer to enable Maintenance Mode"
-                EOT
-            Octopus.Action.Script.ScriptSource = "Inline"
-            Octopus.Action.Script.Syntax = "PowerShell"
-        }
-        worker_pool = "default-worker-pool-1"
-    }
-}
-
 step "deploy-database-changes" {
     condition = "Variable"
     name = "Deploy Database Changes"
@@ -215,8 +196,8 @@ step "deploy-trident-web" {
     }
 }
 
-step "verify-application-post-deployment" {
-    name = "Verify Application Post Deployment"
+step "verify-application" {
+    name = "Verify application"
 
     action {
         action_type = "Octopus.Script"
@@ -225,8 +206,8 @@ step "verify-application-post-deployment" {
             Octopus.Action.Script.ScriptBody = <<-EOT
                 $randomNumber = Get-Random -Minimum 1 -Maximum 100
                 
-                Write-Host "The random number is $randomNumber.  If it is above 99, this will fail the step."
-                if ($randomNumber -ge 99)
+                Write-Host "The random number is $randomNumber.  If it is above 90, this will fail the step."
+                if ($randomNumber -ge 90)
                 {
                 	Write-Host "An error occurred verifying the application."
                     exit 1
@@ -240,7 +221,7 @@ step "verify-application-post-deployment" {
 }
 
 step "add-to-load-balancer" {
-    name = "Disable Maintenance Mode"
+    name = "Update Load Balancer"
 
     action {
         action_type = "Octopus.Script"
