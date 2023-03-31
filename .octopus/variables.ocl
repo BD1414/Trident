@@ -16,9 +16,20 @@ variable "Project.Database.Server.Name" {
     value "(localdb)\\MSSQLLocalDB" {}
 }
 
+variable "Project.Database.Name" {
+    value "Trident_#{Octopus.Environment.Name}_#{Retail.Tenant.ShortName}" {
+        environment = ["development", "qa", "staging"]
+    }
+
+    value "Trident_#{Retail.Tenant.ShortName}" {
+        description = ""
+        environment = ["production", "production-blue", "production-green"]
+    }
+}
+
 variable "Octopus.ServiceNow.ChangeRequest.Number" {
     value {
-        environment = ["production"]
+        environment = ["production", "production-blue", "production-green"]
 
         prompt {
             description = ""
@@ -28,30 +39,5 @@ variable "Octopus.ServiceNow.ChangeRequest.Number" {
             label = "ServiceNow Change Request"
             required = true
         }
-    }
-
-    value "" {
-        description = ""
-        environment = ["production-blue", "production-green"]
-        process = ["deployment-process"]
-
-        prompt {
-            description = ""
-            display_settings = {
-                Octopus.ControlType = "SingleLineText"
-            }
-            label = "Service Now Change Request Number"
-        }
-    }
-}
-
-variable "Project.Database.Name" {
-    value "Trident_#{Octopus.Environment.Name}_#{Retail.Tenant.ShortName}" {
-        environment = ["development", "qa", "staging"]
-    }
-
-    value "Trident_#{Retail.Tenant.ShortName}" {
-        description = ""
-        environment = ["production"]
     }
 }
